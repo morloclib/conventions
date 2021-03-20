@@ -1,0 +1,228 @@
+module conventions
+
+export id
+-- tuple functions
+export fst
+export snd
+export tuple
+export couple
+export with_sec
+export with_fst
+export curry
+export uncurry
+-- pairlists
+export zip
+export unzip
+export keys
+export vals
+-- functions over pairlists
+export filter_key
+export filter_val
+export map_key
+export map_val
+export with_keys
+export with_vals
+-- context filtering
+export context_filter_key
+export context_filter_val
+-- functional tools
+export flip
+export until
+-- foldable functions - replace once I get typeclasses working
+export length
+export reverse
+export concat
+export concatMap
+-- list creation
+export replicate
+-- general list processing
+export head
+export last
+export tail
+export init
+export get
+export take
+export drop
+export takeWhile
+export dropWhile
+export span
+export break
+export splitAt
+-- string processing
+export lines
+export words
+export unlines
+export unwords
+-- accumulating folds
+export scanl
+export scanr
+export scanl1
+export scanr1
+-- arithmetic operators - these are all
+-- add :: (Num a) => a -> a -> a
+export add
+-- sub :: (Num a) => a -> a -> a
+export sub
+-- mul :: (Num a) => a -> a -> a
+export mul
+-- div :: (Num a) => a -> a -> a
+export div
+-- mod :: (Num a) => a -> a -> a
+export div
+-- hofs
+export map
+export zipWith
+export fold
+export enumerateWith
+-- pairlists
+export zip
+export unzip
+export keys
+export vals
+-- functions over pairlists
+export filter_key
+export filter_val
+export map_key
+export map_val
+export with_keys
+export with_vals
+
+
+id :: a -> a
+
+-- tuple functions
+fst :: (a, b) -> a
+snd :: (a, b) -> b
+tuple :: a -> b -> (a, b)
+couple :: (a -> b) -> a -> (b, a)
+with_sec :: (b -> c) -> (a, b) -> (a, c)
+with_fst :: (a -> c) -> (a, b) -> (c, b)
+curry :: ((a, b) -> c) -> a -> b -> c
+uncurry :: (a -> b -> c) -> (a, b) -> c
+
+-- pairlists
+zip :: [a] -> [b] -> [(a, b)]
+unzip :: [(a, b)] -> ([a], [b])
+keys :: [(a, b)] -> [a]
+vals :: [(a, b)] -> [b]
+
+-- functions over pairlists
+filter_key :: (a -> Bool) -> [(a, b)] -> [(a, b)]
+filter_val :: (a -> Bool) -> [(b, a)] -> [(b, a)]
+map_key :: (a -> b) -> [(a, c)] -> [(b, c)]
+map_val :: (a -> b) -> [(c, a)] -> [(c, b)]
+with_keys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
+with_vals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
+
+-- -- Laws
+-- with_vals id xs == xs
+-- with_keys id xs == xs
+-- map_val id xs == xs
+-- map_key id xs == xs
+-- filter_val true xs == xs
+-- filter_val false xs == []
+-- filter_key true xs == xs
+-- filter_key false xs == []
+
+context_filter_key :: (a -> b -> (a, Bool)) -> a -> [(b,c)] -> [(b,c)]
+context_filter_val :: (a -> b -> (a, Bool)) -> a -> [(c,b)] -> [(c,b)]
+
+-- functional tools
+flip :: (a -> b -> c) -> b -> a -> c
+until :: (a -> Bool) -> (a -> a) -> a -> a
+
+-- foldable functions - replace once I get typeclasses working
+length :: [a] -> Int
+reverse :: [a] -> [a]
+concat :: [[a]] -> [a]
+concatMap :: (a -> [b]) -> [a] -> [b]
+
+-- list creation
+replicate :: Int -> a -> [a]
+
+-- general list processing
+head :: [a] -> a -- [1,2,3] => 1
+last :: [a] -> a -- [1,2,3] => 3
+tail :: [a] -> [a] -- [1,2,3] => [2,3]
+init :: [a] -> [a] -- [1,2,3] => [1,2]
+get :: Int -> [a] -> a -- get 1 [1,2,3] => 2
+take :: Int -> [a] -> [a]
+drop :: Int -> [a] -> [a]
+takeWhile :: (a -> Bool) -> [a] -> [a]
+dropWhile :: (a -> Bool) -> [a] -> [a]
+span :: (a -> Bool) -> [a] -> ([a], [a])
+break :: (a -> Bool) -> [a] -> ([a], [a])
+splitAt :: Int -> [a] -> ([a], [a])
+
+-- string processing
+lines :: Str -> [Str]
+words :: Str -> [Str]
+unlines :: [Str] -> Str
+unwords :: [Str] -> Str
+
+-- accumulating folds
+scanl :: (b -> a -> b) -> b -> [a] -> [b]
+scanr :: (a -> b -> b) -> b -> [a] -> [b]
+scanl1 :: (a -> a -> a) -> [a] -> [a]
+scanr1 :: (a -> a -> a) -> [a] -> [a]
+
+
+-- NOTE: After a system for numeric casting is added to morloc, replace the
+-- concrete arithmetic operators below with qualified types, e.g.:
+-- add :: Num -> Num -> Num
+-- add Cpp :: a -> a -> a
+-- Or maybe
+-- add Cpp :: a -> b -> c
+-- So this is complicated ... if the two inputs to add can be of different
+-- types, say int and double, then what is the return type? For add, the return
+-- type would need to be decided based on a function of the input types. But these
+-- types will depend on the function. I will need to research this problem ...
+--
+-- As a temporary measure, I will leave the types as "double". On the C++ side
+-- in core.hpp, they are all implemented as fully generalized templates of three
+-- independent types.
+
+-- arithmetic operators - these are all
+-- add :: (Num a) => a -> a -> a
+add :: Num -> Num -> Num
+
+-- sub :: (Num a) => a -> a -> a
+sub :: Num -> Num -> Num
+
+-- mul :: (Num a) => a -> a -> a
+mul :: Num -> Num -> Num
+
+-- div :: (Num a) => a -> a -> a
+div :: Num -> Num -> Num
+
+-- mod :: (Num a) => a -> a -> a
+div :: Num -> Num -> Num
+
+
+map :: (a -> b) -> [a] -> [b]
+
+zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+
+fold :: (b -> a -> b) -> b -> [a] -> b
+
+enumerateWith :: (a -> Int -> b) -> [a] -> [b]
+
+
+-------------------------------------------------------------------------------
+-- Pair-list functions
+-------------------------------------------------------------------------------
+
+
+-- pairlists
+zip :: [a] -> [b] -> [(a, b)]
+unzip :: [(a, b)] -> ([a], [b])
+keys :: [(a, b)] -> [a]
+vals :: [(a, b)] -> [b]
+
+-- functions over pairlists
+filter_key :: (a -> Bool) -> [(a, b)] -> [(a, b)]
+filter_val :: (a -> Bool) -> [(b, a)] -> [(b, a)]
+map_key :: (a -> b) -> [(a, c)] -> [(b, c)]
+map_val :: (a -> b) -> [(c, a)] -> [(c, b)]
+with_keys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
+with_vals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
