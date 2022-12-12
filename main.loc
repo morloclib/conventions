@@ -1,5 +1,10 @@
 module conventions
 
+
+export onFsts
+export chain
+export augment
+
 export id
 -- tuple functions
 export fst
@@ -90,11 +95,17 @@ export with_vals
 
 id :: a -> a
 
+
+    -- where
+    -- onFst xs id == xs
+
 -- tuple functions
 fst :: (a, b) -> a
 snd :: (a, b) -> b
+seq :: a -> b -> b
 tuple :: a -> b -> (a, b)
-couple :: (a -> b) -> a -> (b, a)
+couple_left  :: (a -> b) -> a -> (b, a)
+couple_right :: (a -> b) -> a -> (a, b)
 with_sec :: (b -> c) -> (a, b) -> (a, c)
 with_fst :: (a -> c) -> (a, b) -> (c, b)
 curry :: ((a, b) -> c) -> a -> b -> c
@@ -113,6 +124,9 @@ map_key :: (a -> b) -> [(a, c)] -> [(b, c)]
 map_val :: (a -> b) -> [(c, a)] -> [(c, b)]
 with_keys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
 with_vals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
+
+-- conversions
+show :: a -> Str
 
 -- -- Laws
 -- with_vals id xs == xs
