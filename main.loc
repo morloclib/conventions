@@ -1,35 +1,35 @@
 module conventions
 
 
-export onFsts
-export chain
-export augment
-
 export id
+export seq
+export show
 -- tuple functions
 export fst
 export snd
 export tuple
-export couple
-export with_sec
-export with_fst
 export curry
 export uncurry
+export at
+export mapFst
+export mapSnd
+export toFst
+export toSnd
 -- pairlists
 export zip
 export unzip
 export keys
 export vals
 -- functions over pairlists
-export filter_key
-export filter_val
-export map_key
-export map_val
-export with_keys
-export with_vals
+export filterKey
+export filterVal
+export mapVal
+export mapKey
+export withKeys
+export withVals
 -- context filtering
-export context_filter_key
-export context_filter_val
+export contextFilterKey
+export contextFilterVal
 -- functional tools
 export flip
 export until
@@ -64,82 +64,80 @@ export scanr
 export scanl1
 export scanr1
 -- arithmetic operators - these are all
--- add :: (Real a) => a -> a -> a
 export add
--- sub :: (Real a) => a -> a -> a
 export sub
--- mul :: (Real a) => a -> a -> a
 export mul
--- div :: (Real a) => a -> a -> a
 export div
--- mod :: (Real a) => a -> a -> a
-export div
+export mod
 -- hofs
 export map
 export zipWith
 export fold
 export enumerateWith
--- pairlists
-export zip
-export unzip
-export keys
-export vals
--- functions over pairlists
-export filter_key
-export filter_val
-export map_key
-export map_val
-export with_keys
-export with_vals
-
 
 id :: a -> a
-
-
-    -- where
-    -- onFst xs id == xs
+seq :: a -> b -> b
+const :: a -> b -> a
 
 -- tuple functions
 fst :: (a, b) -> a
 snd :: (a, b) -> b
-seq :: a -> b -> b
 tuple :: a -> b -> (a, b)
-couple_left  :: (a -> b) -> a -> (b, a)
-couple_right :: (a -> b) -> a -> (a, b)
-with_sec :: (b -> c) -> (a, b) -> (a, c)
-with_fst :: (a -> c) -> (a, b) -> (c, b)
 curry :: ((a, b) -> c) -> a -> b -> c
 uncurry :: (a -> b -> c) -> (a, b) -> c
+
+mapSnd :: (b -> b') -> (a, b) -> (a, b')
+mapFst :: (a -> a') -> (a, b) -> (a', b)
+
+toSnd :: (a -> b) -> a -> (a, b)
+toFst :: (a -> b) -> a -> (b, a)
+
+-- list operations
+at :: [a] -> Int -> a
 
 -- pairlists
 zip :: [a] -> [b] -> [(a, b)]
 unzip :: [(a, b)] -> ([a], [b])
-keys :: [(a, b)] -> [a]
-vals :: [(a, b)] -> [b]
 
--- functions over pairlists
-filter_key :: (a -> Bool) -> [(a, b)] -> [(a, b)]
-filter_val :: (a -> Bool) -> [(b, a)] -> [(b, a)]
-map_key :: (a -> b) -> [(a, c)] -> [(b, c)]
-map_val :: (a -> b) -> [(c, a)] -> [(c, b)]
-with_keys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
-with_vals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
+
+keys :: [(a, b)] -> [a]
+keys = map fst
+
+vals :: [(a, b)] -> [b]
+vals = map snd
+
+-- -- functions over pairlists
+filterKey :: (a -> Bool) -> [(a, b)] -> [(a, b)]
+-- filterKey f = filter (f . fst) xs
+-- I should remove this, I just need to add a composition operator
+filterVal :: (b -> Bool) -> [(a, b)] -> [(a, b)]
+
+
+withKeys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
+withKeys f xs = zip (f (map fst xs)) (map snd xs)
+
+withVals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
+
+mapVal :: (a -> b) -> [(c, a)] -> [(c, b)]
+mapKey :: (a -> b) -> [(a, c)] -> [(b, c)]
+-- mapKey f = map (onFst f)
+
 
 -- conversions
 show :: a -> Str
 
 -- -- Laws
--- with_vals id xs == xs
--- with_keys id xs == xs
--- map_val id xs == xs
--- map_key id xs == xs
--- filter_val true xs == xs
--- filter_val false xs == []
--- filter_key true xs == xs
--- filter_key false xs == []
+-- withVals id xs == xs
+-- withKeys id xs == xs
+-- mapVal id xs == xs
+-- mapKey id xs == xs
+-- filterVal true xs == xs
+-- filterVal false xs == []
+-- filterKey true xs == xs
+-- filterKey false xs == []
 
-context_filter_key :: (a -> b -> (a, Bool)) -> a -> [(b,c)] -> [(b,c)]
-context_filter_val :: (a -> b -> (a, Bool)) -> a -> [(c,b)] -> [(c,b)]
+contextFilterKey :: (a -> b -> (a, Bool)) -> a -> [(b,c)] -> [(b,c)]
+contextFilterVal :: (a -> b -> (a, Bool)) -> a -> [(c,b)] -> [(c,b)]
 
 -- functional tools
 flip :: (a -> b -> c) -> b -> a -> c
@@ -210,7 +208,7 @@ mul :: Real -> Real -> Real
 div :: Real -> Real -> Real
 
 -- mod :: (Real a) => a -> a -> a
-div :: Real -> Real -> Real
+mod :: Real -> Real -> Real
 
 
 map :: (a -> b) -> [a] -> [b]
@@ -220,23 +218,3 @@ zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 fold :: (b -> a -> b) -> b -> [a] -> b
 
 enumerateWith :: (a -> Int -> b) -> [a] -> [b]
-
-
--------------------------------------------------------------------------------
--- Pair-list functions
--------------------------------------------------------------------------------
-
-
--- pairlists
-zip :: [a] -> [b] -> [(a, b)]
-unzip :: [(a, b)] -> ([a], [b])
-keys :: [(a, b)] -> [a]
-vals :: [(a, b)] -> [b]
-
--- functions over pairlists
-filter_key :: (a -> Bool) -> [(a, b)] -> [(a, b)]
-filter_val :: (a -> Bool) -> [(b, a)] -> [(b, a)]
-map_key :: (a -> b) -> [(a, c)] -> [(b, c)]
-map_val :: (a -> b) -> [(c, a)] -> [(c, b)]
-with_keys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
-with_vals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
