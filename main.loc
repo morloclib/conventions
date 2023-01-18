@@ -68,6 +68,7 @@ export add
 export sub
 export mul
 export div
+export neg
 export mod
 -- hofs
 export map
@@ -93,7 +94,7 @@ toSnd :: (a -> b) -> a -> (a, b)
 toFst :: (a -> b) -> a -> (b, a)
 
 -- list operations
-at :: [a] -> Int -> a
+at :: Int -> [a] -> a
 
 -- pairlists
 zip :: [a] -> [b] -> [(a, b)]
@@ -206,6 +207,8 @@ mul :: Real -> Real -> Real
 
 -- div :: (Real a) => a -> a -> a
 div :: Real -> Real -> Real
+
+neg :: Real -> Real
 
 -- mod :: (Real a) => a -> a -> a
 mod :: Real -> Real -> Real
