@@ -1,132 +1,139 @@
 module conventions
 
+{-
 
-export id
-export seq
-export show
--- tuple functions
-export fst
-export snd
-export tuple
-export curry
-export uncurry
+This module is too big. Should there really be a prelude? What does everyone
+ALWAYS need? Also, learn from Haskell, avoid prelude commitment and the string
+problem.
+
+So what modules might I make?
+
+  text
+  byte
+  list
+  comb
+  func
+  ...
+
+And so on, but now I have a partioning problem leading to the annoying issue of
+remembering which module contains which functionallity. The problem is that
+classification is not so clear. A function like "lookup" may be have
+implementations for pair lists and maps and data bases. It generalizes the idea
+of `f k a -> k -> ?a`, where `?` is my standin for `Maybe`.
+
+-}
+
+-- I really need to implement `export *` syntax
+export add
 export at
-export mapFst
-export mapSnd
-export toFst
-export toSnd
--- pairlists
-export zip
-export unzip
-export keys
-export vals
--- functions over pairlists
-export filterKey
-export filterVal
-export mapVal
-export mapKey
-export withKeys
-export withVals
--- context filtering
-export contextFilterKey
-export contextFilterVal
--- functional tools
-export flip
-export until
--- foldable functions - replace once I get typeclasses working
-export length
-export reverse
+export break
 export concat
 export concatMap
--- list creation
-export replicate
--- general list processing
-export head
-export last
-export tail
-export init
-export get
-export take
-export drop
-export takeWhile
-export dropWhile
-export span
-export break
-export splitAt
--- string processing
-export lines
-export words
-export unlines
-export unwords
--- accumulating folds
-export scanl
-export scanr
-export scanl1
-export scanr1
--- arithmetic operators - these are all
-export add
-export sub
-export mul
+export contextFilterKey
+export contextFilterVal
+export curry
 export div
-export neg
-export mod
--- hofs
-export map
-export zipWith
-export fold
+export drop
+export dropWhile
+export elem
 export enumerateWith
+export filterKey
+export filterVal
+export flip
+export fold
+export fst
+export get
+export gt
+export head
+export id
+export ifelse
+export init
+export join
+export keys
+export last
+export length
+export lines
+export lookup
+export map
+export mapFst
+export mapKey
+export onSnd
+export mapVal
+export mod
+export mul
+export neg
+export onFst
+export readMap
+export replicate
+export reverse
+export scanl
+export scanl1
+export scanr
+export scanr1
+export seq
+export shard
+export show
+export sleep
+export snd
+export span
+export splitAt
+export strLength
+export sub
+export tail
+export take
+export takeWhile
+export toFst
+export toSnd
+export tuple
+export uncurry
+export unique
+export unlines
+export until
+export unwords
+export unzip
+export vals
+export withKeys
+export withVals
+export words
+export zip
+export zipWith
+export gt
+export lt
+export eq
+export ne
 
+
+------------- Effects
+sleep :: Real -> a -> a
+
+------------- Control
+ifelse :: Bool -> a -> a -> a
+
+------------- Combinators and functions
 id :: a -> a
 seq :: a -> b -> b
 const :: a -> b -> a
-
--- tuple functions
 fst :: (a, b) -> a
 snd :: (a, b) -> b
 tuple :: a -> b -> (a, b)
 curry :: ((a, b) -> c) -> a -> b -> c
 uncurry :: (a -> b -> c) -> (a, b) -> c
-
-mapSnd :: (b -> b') -> (a, b) -> (a, b')
-mapFst :: (a -> a') -> (a, b) -> (a', b)
-
+onSnd :: (b -> b') -> (a, b) -> (a, b')
+onFst :: (a -> a') -> (a, b) -> (a', b)
 toSnd :: (a -> b) -> a -> (a, b)
 toFst :: (a -> b) -> a -> (b, a)
 
--- list operations
-at :: Int -> [a] -> a
-
--- pairlists
-zip :: [a] -> [b] -> [(a, b)]
-unzip :: [(a, b)] -> ([a], [b])
-
-
-keys :: [(a, b)] -> [a]
-keys = map fst
-
-vals :: [(a, b)] -> [b]
-vals = map snd
-
--- -- functions over pairlists
-filterKey :: (a -> Bool) -> [(a, b)] -> [(a, b)]
--- filterKey f = filter (f . fst) xs
--- I should remove this, I just need to add a composition operator
-filterVal :: (b -> Bool) -> [(a, b)] -> [(a, b)]
-
-
-withKeys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
-withKeys f xs = zip (f (map fst xs)) (map snd xs)
-
-withVals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
-
-mapVal :: (a -> b) -> [(c, a)] -> [(c, b)]
-mapKey :: (a -> b) -> [(a, c)] -> [(b, c)]
--- mapKey f = map (onFst f)
-
-
--- conversions
+------------- Strings
 show :: a -> Str
+unlines :: [Str] -> Str
+words :: Str -> [Str]
+unwords :: [Str] -> Str
+lines :: Str -> [Str]
+strLength :: Str -> Int
 
+
+
+------------- Lists
 -- -- Laws
 -- withVals id xs == xs
 -- withKeys id xs == xs
@@ -137,48 +144,62 @@ show :: a -> Str
 -- filterKey true xs == xs
 -- filterKey false xs == []
 
-contextFilterKey :: (a -> b -> (a, Bool)) -> a -> [(b,c)] -> [(b,c)]
-contextFilterVal :: (a -> b -> (a, Bool)) -> a -> [(c,b)] -> [(c,b)]
-
--- functional tools
-flip :: (a -> b -> c) -> b -> a -> c
-until :: (a -> Bool) -> (a -> a) -> a -> a
-
--- foldable functions - replace once I get typeclasses working
-length :: [a] -> Int
-reverse :: [a] -> [a]
+at :: [a] -> Int -> a
+break :: (a -> Bool) -> [a] -> ([a], [a])
 concat :: [[a]] -> [a]
 concatMap :: (a -> [b]) -> [a] -> [b]
-
--- list creation
-replicate :: Int -> a -> [a]
-
--- general list processing
-head :: [a] -> a -- [1,2,3] => 1
-last :: [a] -> a -- [1,2,3] => 3
-tail :: [a] -> [a] -- [1,2,3] => [2,3]
-init :: [a] -> [a] -- [1,2,3] => [1,2]
-get :: Int -> [a] -> a -- get 1 [1,2,3] => 2
-take :: Int -> [a] -> [a]
+contextFilterKey :: (a -> b -> (a, Bool)) -> a -> [(b,c)] -> [(b,c)]
+contextFilterVal :: (a -> b -> (a, Bool)) -> a -> [(c,b)] -> [(c,b)]
 drop :: Int -> [a] -> [a]
-takeWhile :: (a -> Bool) -> [a] -> [a]
 dropWhile :: (a -> Bool) -> [a] -> [a]
-span :: (a -> Bool) -> [a] -> ([a], [a])
-break :: (a -> Bool) -> [a] -> ([a], [a])
-splitAt :: Int -> [a] -> ([a], [a])
-
--- string processing
-lines :: Str -> [Str]
-words :: Str -> [Str]
-unlines :: [Str] -> Str
-unwords :: [Str] -> Str
-
--- accumulating folds
+enumerateWith :: (a -> Int -> b) -> [a] -> [b]
+filterKey :: (a -> Bool) -> [(a, b)] -> [(a, b)]
+filterVal :: (b -> Bool) -> [(a, b)] -> [(a, b)]
+flip :: (a -> b -> c) -> b -> a -> c
+fold :: (b -> a -> b) -> b -> [a] -> b
+get :: Int -> [a] -> a -- get 1 [1,2,3] => 2
+head :: [a] -> a -- [1,2,3] => 1
+init :: [a] -> [a] -- [1,2,3] => [1,2]
+join :: [a] -> [a] -> [a]
+last :: [a] -> a -- [1,2,3] => 3
+length :: [a] -> Int
+lookup :: k -> [(k, v)] -> v
+map :: (a -> b) -> [a] -> [b]
+mapKey :: (a -> b) -> [(a, c)] -> [(b, c)]
+mapVal :: (a -> b) -> [(c, a)] -> [(c, b)]
+replicate :: Int -> a -> [a]
+reverse :: [a] -> [a]
 scanl :: (b -> a -> b) -> b -> [a] -> [b]
-scanr :: (a -> b -> b) -> b -> [a] -> [b]
 scanl1 :: (a -> a -> a) -> [a] -> [a]
+scanr :: (a -> b -> b) -> b -> [a] -> [b]
 scanr1 :: (a -> a -> a) -> [a] -> [a]
+shard :: Int -> [a] -> [[a]]
+span :: (a -> Bool) -> [a] -> ([a], [a])
+splitAt :: Int -> [a] -> ([a], [a])
+tail :: [a] -> [a] -- [1,2,3] => [2,3]
+take :: Int -> [a] -> [a]
+takeWhile :: (a -> Bool) -> [a] -> [a]
+unique :: [a] -> [a]
+until :: (a -> Bool) -> (a -> a) -> a -> a
+unzip :: [(a, b)] -> ([a], [b])
+withKeys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
+withVals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
+zip :: [a] -> [b] -> [(a, b)]
+zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+elem :: a -> [a] -> Bool
 
+
+withKeys f xs = zip (f (map fst xs)) (map snd xs)
+
+------------- Maps
+
+keys :: Map a b -> [a]
+vals :: Map a b -> [b]
+mapKeys :: (a -> a') -> Map a b -> Map a' b 
+mapVals :: (b -> b') -> Map a b -> Map a b'
+readMap :: Filename -> Map key val
+
+------------- Arithmetic and Comparisons
 
 -- NOTE: After a system for numeric casting is added to morloc, replace the
 -- concrete arithmetic operators below with qualified types, e.g.:
@@ -195,29 +216,18 @@ scanr1 :: (a -> a -> a) -> [a] -> [a]
 -- in core.hpp, they are all implemented as fully generalized templates of three
 -- independent types.
 
--- arithmetic operators - these are all
--- add :: (Real a) => a -> a -> a
+-- arithmetic operators - these are all currently limited to reals. Integers are
+-- not supported. That is embarrassing. I really really need typeclasses.
+
 add :: Real -> Real -> Real
-
--- sub :: (Real a) => a -> a -> a
 sub :: Real -> Real -> Real
-
--- mul :: (Real a) => a -> a -> a
 mul :: Real -> Real -> Real
-
--- div :: (Real a) => a -> a -> a
 div :: Real -> Real -> Real
-
+mod :: Real -> Real -> Real
 neg :: Real -> Real
 
--- mod :: (Real a) => a -> a -> a
-mod :: Real -> Real -> Real
-
-
-map :: (a -> b) -> [a] -> [b]
-
-zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
-
-fold :: (b -> a -> b) -> b -> [a] -> b
-
-enumerateWith :: (a -> Int -> b) -> [a] -> [b]
+--- TODO: these too specific, being limited to integers, need typeclasses!!!
+gt :: Int -> Int -> Bool
+lt :: Int -> Int -> Bool
+eq :: Int -> Int -> Bool
+ne :: Int -> Int -> Bool
