@@ -1,107 +1,27 @@
-module conventions
+module conventions (*)
 
 {-
 
-This module is too big. Should there really be a prelude? What does everyone
-ALWAYS need? Also, learn from Haskell, avoid prelude commitment and the string
-problem.
+This package is too big. It is hard to draw a line at what fits in and what
+doesn't. So much depends on domain. So it may make more sense to break
+everything down into smaller packages.
 
-So what modules might I make?
-
-  text
-  byte
-  list
-  comb
-  func
-  ...
-
-And so on, but now I have a partioning problem leading to the annoying issue of
-remembering which module contains which functionallity. The problem is that
-classification is not so clear. A function like "lookup" may be have
-implementations for pair lists and maps and data bases. It generalizes the idea
-of `f k a -> k -> ?a`, where `?` is my standin for `Maybe`.
+ * math
+ * stat
+ * ml
+ * combinators
+ * containers
+   * list
+   * tuple
+   * map
+   * set
+   * maybe
+   * either
+ * binary
+ * string
+ * text
 
 -}
-
--- I really need to implement `export *` syntax
-export add
-export at
-export break
-export concat
-export concatMap
-export contextFilterKey
-export contextFilterVal
-export curry
-export div
-export drop
-export dropWhile
-export elem
-export enumerateWith
-export filterKey
-export filterVal
-export flip
-export fold
-export fst
-export get
-export gt
-export head
-export id
-export ifelse
-export init
-export join
-export keys
-export last
-export length
-export lines
-export lookup
-export map
-export mapFst
-export mapKey
-export onSnd
-export mapVal
-export mod
-export mul
-export neg
-export onFst
-export readMap
-export replicate
-export reverse
-export scanl
-export scanl1
-export scanr
-export scanr1
-export seq
-export shard
-export show
-export sleep
-export snd
-export span
-export splitAt
-export strLength
-export sub
-export tail
-export take
-export takeWhile
-export toFst
-export toSnd
-export tuple
-export uncurry
-export unique
-export unlines
-export until
-export unwords
-export unzip
-export vals
-export withKeys
-export withVals
-export words
-export zip
-export zipWith
-export gt
-export lt
-export eq
-export ne
-
 
 ------------- Effects
 sleep :: Real -> a -> a
@@ -129,7 +49,7 @@ unlines :: [Str] -> Str
 words :: Str -> [Str]
 unwords :: [Str] -> Str
 lines :: Str -> [Str]
-strLength :: Str -> Int
+lengthS :: Str -> Int
 
 
 
@@ -141,8 +61,6 @@ strLength :: Str -> Int
 -- mapKey id xs == xs
 -- filterVal true xs == xs
 -- filterVal false xs == []
--- filterKey true xs == xs
--- filterKey false xs == []
 
 at :: [a] -> Int -> a
 break :: (a -> Bool) -> [a] -> ([a], [a])
@@ -153,20 +71,17 @@ contextFilterVal :: (a -> b -> (a, Bool)) -> a -> [(c,b)] -> [(c,b)]
 drop :: Int -> [a] -> [a]
 dropWhile :: (a -> Bool) -> [a] -> [a]
 enumerateWith :: (a -> Int -> b) -> [a] -> [b]
-filterKey :: (a -> Bool) -> [(a, b)] -> [(a, b)]
-filterVal :: (b -> Bool) -> [(a, b)] -> [(a, b)]
 flip :: (a -> b -> c) -> b -> a -> c
 fold :: (b -> a -> b) -> b -> [a] -> b
 get :: Int -> [a] -> a -- get 1 [1,2,3] => 2
 head :: [a] -> a -- [1,2,3] => 1
 init :: [a] -> [a] -- [1,2,3] => [1,2]
 join :: [a] -> [a] -> [a]
+cons :: a -> [a] -> [a]
 last :: [a] -> a -- [1,2,3] => 3
 length :: [a] -> Int
 lookup :: k -> [(k, v)] -> v
 map :: (a -> b) -> [a] -> [b]
-mapKey :: (a -> b) -> [(a, c)] -> [(b, c)]
-mapVal :: (a -> b) -> [(c, a)] -> [(c, b)]
 replicate :: Int -> a -> [a]
 reverse :: [a] -> [a]
 scanl :: (b -> a -> b) -> b -> [a] -> [b]
@@ -182,21 +97,20 @@ takeWhile :: (a -> Bool) -> [a] -> [a]
 unique :: [a] -> [a]
 until :: (a -> Bool) -> (a -> a) -> a -> a
 unzip :: [(a, b)] -> ([a], [b])
-withKeys :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
-withVals :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
+withFsts :: ([a] -> [b]) -> [(a, c)] -> [(b, c)]
+withSnds :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
 zip :: [a] -> [b] -> [(a, b)]
 zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 elem :: a -> [a] -> Bool
-
-
-withKeys f xs = zip (f (map fst xs)) (map snd xs)
 
 ------------- Maps
 
 keys :: Map a b -> [a]
 vals :: Map a b -> [b]
-mapKeys :: (a -> a') -> Map a b -> Map a' b 
-mapVals :: (b -> b') -> Map a b -> Map a b'
+mapKey :: (a -> a') -> Map a b -> Map a' b 
+mapVal :: (b -> b') -> Map a b -> Map a b'
+filterKey :: (k -> Bool) -> Map k v -> Map k v
+filterVal :: (v -> Bool) -> Map k v -> Map k v
 readMap :: Filename -> Map key val
 
 ------------- Arithmetic and Comparisons
