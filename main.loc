@@ -28,6 +28,7 @@ sleep :: Real -> a -> a
 
 ------------- Control
 ifelse :: Bool -> a -> a -> a
+run :: (() -> a) -> a
 
 ------------- Combinators and functions
 id :: a -> a
