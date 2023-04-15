@@ -23,6 +23,8 @@ everything down into smaller packages.
 
 -}
 
+type Filename = Str
+
 ------------- Effects
 sleep :: Real -> a -> a
 
