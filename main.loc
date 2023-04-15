@@ -155,5 +155,10 @@ neg :: Real -> Real
 --- TODO: these too specific, being limited to integers, need typeclasses!!!
 gt :: Int -> Int -> Bool
 lt :: Int -> Int -> Bool
+ge :: Int -> Int -> Bool
+le :: Int -> Int -> Bool
 eq :: Int -> Int -> Bool
 ne :: Int -> Int -> Bool
+not :: Bool -> Bool
+and :: Bool -> Bool -> Bool
+or  :: Bool -> Bool -> Bool
