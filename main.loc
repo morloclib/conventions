@@ -1,5 +1,7 @@
 module conventions (*)
 
+type Filename = Str
+
 type Cpp Filename = "std::string"
 type Cpp Unit = "void"
 type Cpp Real = "double"
