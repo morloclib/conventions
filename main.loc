@@ -3,7 +3,7 @@ module conventions (*)
 type Filename = Str
 
 type Cpp Filename = "std::string"
-type Cpp Unit = "Unit" -- this is an enum with a single element, NOT `void`, which corresponds to bottom
+type Cpp Unit = "mlc::Unit" -- this is an enum with a single element, NOT `void`, which corresponds to bottom
 type Cpp Real = "double"
 type Cpp Int = "int"
 type Cpp Str = "std::string"
