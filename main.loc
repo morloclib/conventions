@@ -3,7 +3,7 @@ module conventions (*)
 type Filename = Str
 
 type Cpp Filename = "std::string"
-ype Cpp Unit = "Unit" -- this is an enum with a single element, NOT `void`, which corresponds to bottom
+type Cpp Unit = "Unit" -- this is an enum with a single element, NOT `void`, which corresponds to bottom
 type Cpp Real = "double"
 type Cpp Int = "int"
 type Cpp Str = "std::string"
@@ -216,6 +216,7 @@ last :: [a] -> a -- [1,2,3] => 3
 length :: [a] -> Int
 lookup :: k -> [(k, v)] -> v
 map :: (a -> b) -> [a] -> [b]
+filter :: (a -> Bool) -> [a] -> [a]
 replicate :: Int -> a -> [a]
 reverse :: [a] -> [a]
 scanl :: (b -> a -> b) -> b -> [a] -> [b]
