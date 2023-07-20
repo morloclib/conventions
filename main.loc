@@ -38,10 +38,10 @@ type R Bool = "logical"
 type R Unit = "NULL"
 type R (Map a b) = "list" a b -- this is a bit sus, R lists do not really have a generic key
 type R (List a) = "list" a
-type R (Tuple2 a b) = "tuple" a b
-type R (Tuple3 a b c) = "tuple" a b c
-type R (Tuple4 a b c d) = "tuple" a b c d
-type R (Tuple5 a b c d e) = "tuple" a b c d e
+type R (Tuple2 a b) = "list" a b
+type R (Tuple3 a b c) = "list" a b c
+type R (Tuple4 a b c d) = "list" a b c d
+type R (Tuple5 a b c d e) = "list" a b c d e
 
 
 {-
