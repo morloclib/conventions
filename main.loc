@@ -1,5 +1,19 @@
 module conventions (*)
 
+{-
+
+I need better data structures. "List" doesn't cut it.
+
+Sequence - general type of an ordered linear sequence of elements
+  List - singly-linked list, not optimal for space, fast addition at the beginning
+  Vector - optimal memory, fast random access, O(n) insertions, possibly O(1) append
+  Dequeue - doubly-linked list
+Set
+OrderedSet
+Bag
+
+-}
+
 type Filename = Str
 
 type Cpp Filename = "std::string"
@@ -199,7 +213,7 @@ lengthS :: Str -> Int
 at :: [a] -> Int -> a
 break :: (a -> Bool) -> [a] -> ([a], [a])
 concat :: [[a]] -> [a]
-concatMap :: (a -> [b]) -> [a] -> [b]
+conmap :: (a -> [b]) -> [a] -> [b]
 contextFilterKey :: (a -> b -> (a, Bool)) -> a -> [(b,c)] -> [(b,c)]
 contextFilterVal :: (a -> b -> (a, Bool)) -> a -> [(c,b)] -> [(c,b)]
 drop :: Int -> [a] -> [a]
@@ -212,6 +226,7 @@ head :: [a] -> a -- [1,2,3] => 1
 init :: [a] -> [a] -- [1,2,3] => [1,2]
 join :: [a] -> [a] -> [a]
 cons :: a -> [a] -> [a]
+append :: [a] -> a -> [a]
 last :: [a] -> a -- [1,2,3] => 3
 length :: [a] -> Int
 lookup :: k -> [(k, v)] -> v
