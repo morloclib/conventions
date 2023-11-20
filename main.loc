@@ -196,6 +196,7 @@ show :: a -> Str
 unlines :: [Str] -> Str
 words :: Str -> [Str]
 unwords :: [Str] -> Str
+paste :: Str -> [Str] -> Str
 lines :: Str -> [Str]
 lengthS :: Str -> Int
 
