@@ -163,7 +163,10 @@ type Matrix a n m = Tensor a [n,m]
 sleep :: Real -> a -> a
 
 ------------- Control
+-- Whether this is eager or lazy depends on language
 ifelse :: Bool -> a -> a -> a
+-- like ifelse, but guaranteed to be lazy
+branch :: (a -> Bool) -> (a -> b) -> (a -> b) -> a -> b
 run :: (() -> a) -> a
 
 ------------- Combinators and functions
@@ -290,6 +293,14 @@ mul :: Real -> Real -> Real
 div :: Real -> Real -> Real
 mod :: Real -> Real -> Real
 neg :: Real -> Real
+
+addI :: Int -> Int -> Int
+subI :: Int -> Int -> Int
+mulI :: Int -> Int -> Int
+divI :: Int -> Int -> Int
+modI :: Int -> Int -> Int
+negI :: Int -> Int
+
 
 --- TODO: these too specific, being limited to integers, need typeclasses!!!
 gt :: Int -> Int -> Bool
