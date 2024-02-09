@@ -1,5 +1,7 @@
 module conventions (*)
 
+import prelude
+
 {-
 
 I need better data structures. "List" doesn't cut it.
