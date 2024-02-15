@@ -16,6 +16,32 @@ Bag
 
 -}
 
+-- {-
+--
+-- This package is too big. It is hard to draw a line at what fits in and what
+-- doesn't. So much depends on domain. So it may make more sense to break
+-- everything down into smaller packages.
+--
+--  * math
+--  * stat
+--  * ml
+--  * combinators
+--  * containers
+--    * list
+--    * tuple
+--    * map
+--    * set
+--    * maybe
+--    * either
+--  * binary
+--  * string
+--  * text
+--
+-- -}
+
+
+
+
 type Filename = Str
 
 type Cpp => Filename = "std::string"
@@ -58,106 +84,120 @@ type R => (Tuple4 a b c d) = "list" a b c d
 type R => (Tuple5 a b c d e) = "list" a b c d e
 
 
-{-
+class Sized a where
+  size :: a -> Int
 
-This package is too big. It is hard to draw a line at what fits in and what
-doesn't. So much depends on domain. So it may make more sense to break
-everything down into smaller packages.
+class Show a where
+  show :: a -> Str
 
- * math
- * stat
- * ml
- * combinators
- * containers
-   * list
-   * tuple
-   * map
-   * set
-   * maybe
-   * either
- * binary
- * string
- * text
+class Ord a where
+  le :: a -> a -> Bool
+  lt :: a -> a -> Bool
+  ge :: a -> a -> Bool
+  gt :: a -> a -> Bool
 
--}
+  -- lt x y = and (le x y) (not (le y x))
+  -- ge x y = le y x
+  -- gt x y = and (le y x) (not (le x y))
 
-{-
-class Semigroup a where
-    (<>) :: a -> a -> a
+class Eq a where
+  eq :: a -> a -> Bool
+  ne :: a -> a -> Bool
 
-class HasZero a where
-    zero :: a
+  -- ne = not . eq
 
-class Functor f where
-    map :: (a -> b) -> f a -> f b
+not :: Bool -> Bool
+and :: Bool -> Bool -> Bool
+or  :: Bool -> Bool -> Bool
 
-class HasInverse a where
-    inverse :: a -> a where
-        {inverse (inverse x) == x and (inverse x) != x; x <- a unless x == zero}
-        inverse zero == zero
+class Addable a where
+  zero :: a
+  one :: a
+  add :: a -> a -> a
+  mul :: a -> a -> a
+  mod :: a -> a -> a
+  div :: a -> a -> a
 
-class HasNegative a where
-    neg :: a -> a
+class Subtractable a where
+  neg :: a -> a
+  sub :: a -> a -> a
 
-class (Semigroup m, HasZero m) => Monoid m
-    
-class (Monoid a, HasInverse a) => Ring a
 
-class (Functor f) => Applicative f where
-    pure :: a -> f a
-    (<*>) :: f (a -> b) -> f a -> f b
-
-class (Applicative m) => Monad m where
-    (>>=) :: m a -> (a -> m b) -> m b
-
-class Foldable t where
-    foldMap :: Monoid m => (a -> m) -> t a -> m
-    length :: t a -> Int
-    
-class (FiniteSet f, Functor f) => Sequential f a Int where
-    at :: f a n -> k:Int -> a where
-        0 <= k < n
-    head :: f a {k; k > 0} -> a
-    take :: Int -> f a -> f a
-    drop :: Int -> f a -> f a
-
-class TableLike t where
-    nrow :: t -> Int
-    ncol :: t -> Int
-
-class (HasZero a) => Nat a where
-    zero = 0
-
-class Num a where
-    (+) :: a -> a -> a
-    (-) :: a -> a -> a
-    (*) :: a -> a -> a
-    negate :: a -> a
-    abs :: a -> a
-    sign :: a -> a
-    fromInteger :: Int -> a
-
-class Num a => Fractional a where
-    (/) :: a -> a -> a
-    fromRational :: Rational -> a
-
-class (Real a, Enum a) => Integral a where
-    div :: a -> a -> a
-    mod :: a -> a -> a
-    divMod :: a -> a -> (a, a)
-    toInteger :: a -> Int
-
-class (HasZero a, HasInverse a, HasNegative a) => Real a where
-    zero = 0.0
-    inverse x = 1 / x
-    neg x = -1.0 * x
-
-class (Functor f, Foldable f) => Traversable f where
-    traverse :: Applicative f => (a -> f b) -> t a -> f (t b)
-
-type List a k = Tensor a [k]
-type Matrix a n m = Tensor a [n,m]
--}
+-- class Semigroup a where
+--     (<>) :: a -> a -> a
+--
+-- class HasZero a where
+--     zero :: a
+--
+-- class Functor f where
+--     map :: (a -> b) -> f a -> f b
+--
+-- class HasInverse a where
+--     inverse :: a -> a where
+--         {inverse (inverse x) == x and (inverse x) != x; x <- a unless x == zero}
+--         inverse zero == zero
+--
+-- class HasNegative a where
+--     neg :: a -> a
+--
+-- class (Semigroup m, HasZero m) => Monoid m
+--
+-- class (Monoid a, HasInverse a) => Ring a
+--
+-- class (Functor f) => Applicative f where
+--     pure :: a -> f a
+--     (<*>) :: f (a -> b) -> f a -> f b
+--
+-- class (Applicative m) => Monad m where
+--     (>>=) :: m a -> (a -> m b) -> m b
+--
+-- class Foldable t where
+--     foldMap :: Monoid m => (a -> m) -> t a -> m
+--     length :: t a -> Int
+--
+-- class (FiniteSet f, Functor f) => Sequential f a Int where
+--     at :: f a n -> k:Int -> a where
+--         0 <= k < n
+--     head :: f a {k; k > 0} -> a
+--     take :: Int -> f a -> f a
+--     drop :: Int -> f a -> f a
+--
+-- class TableLike t where
+--     nrow :: t -> Int
+--     ncol :: t -> Int
+--
+-- class (HasZero a) => Nat a where
+--     zero = 0
+--
+-- class Num a where
+--     (+) :: a -> a -> a
+--     (-) :: a -> a -> a
+--     (*) :: a -> a -> a
+--     negate :: a -> a
+--     abs :: a -> a
+--     sign :: a -> a
+--     fromInteger :: Int -> a
+--
+-- class Num a => Fractional a where
+--     (/) :: a -> a -> a
+--     fromRational :: Rational -> a
+--
+-- class (Real a, Enum a) => Integral a where
+--     div :: a -> a -> a
+--     mod :: a -> a -> a
+--     divMod :: a -> a -> (a, a)
+--     toInteger :: a -> Int
+--
+-- class (HasZero a, HasInverse a, HasNegative a) => Real a where
+--     zero = 0.0
+--     inverse x = 1 / x
+--     neg x = -1.0 * x
+--
+-- class (Functor f, Foldable f) => Traversable f where
+--     traverse :: Applicative f => (a -> f b) -> t a -> f (t b)
+--
+-- type List a k = Tensor a [k]
+-- type Matrix a n m = Tensor a [n,m]
 
 ------------- Effects
 sleep :: Real -> a -> a
@@ -266,49 +306,3 @@ mapVal :: (b -> b') -> Map a b -> Map a b'
 filterKey :: (k -> Bool) -> Map k v -> Map k v
 filterVal :: (v -> Bool) -> Map k v -> Map k v
 readMap :: Filename -> Map Str Str
-
-------------- Arithmetic and Comparisons
-
--- NOTE: After a system for numeric casting is added to morloc, replace the
--- concrete arithmetic operators below with qualified types, e.g.:
--- add :: Real -> Real -> Real
--- add Cpp :: a -> a -> a
--- Or maybe
--- add Cpp :: a -> b -> c
--- So this is complicated ... if the two inputs to add can be of different
--- types, say int and double, then what is the return type? For add, the return
--- type would need to be decided based on a function of the input types. But these
--- types will depend on the function. I will need to research this problem ...
---
--- As a temporary measure, I will leave the types as "double". On the C++ side
--- in core.hpp, they are all implemented as fully generalized templates of three
--- independent types.
-
--- arithmetic operators - these are all currently limited to reals. Integers are
--- not supported. That is embarrassing. I really really need typeclasses.
-
-add :: Real -> Real -> Real
-sub :: Real -> Real -> Real
-mul :: Real -> Real -> Real
-div :: Real -> Real -> Real
-mod :: Real -> Real -> Real
-neg :: Real -> Real
-
-addI :: Int -> Int -> Int
-subI :: Int -> Int -> Int
-mulI :: Int -> Int -> Int
-divI :: Int -> Int -> Int
-modI :: Int -> Int -> Int
-negI :: Int -> Int
-
-
---- TODO: these too specific, being limited to integers, need typeclasses!!!
-gt :: Int -> Int -> Bool
-lt :: Int -> Int -> Bool
-ge :: Int -> Int -> Bool
-le :: Int -> Int -> Bool
-eq :: Int -> Int -> Bool
-ne :: Int -> Int -> Bool
-not :: Bool -> Bool
-and :: Bool -> Bool -> Bool
-or  :: Bool -> Bool -> Bool
