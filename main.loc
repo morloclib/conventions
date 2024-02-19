@@ -1,8 +1,6 @@
 module conventions (*)
 
 import types
-import prelude
-
 
 -- {-
 --
@@ -63,7 +61,6 @@ toSnd :: (a -> b) -> a -> (a, b)
 toFst :: (a -> b) -> a -> (b, a)
 
 ------------- Strings
-show :: a -> Str
 unlines :: [Str] -> Str
 words :: Str -> [Str]
 unwords :: [Str] -> Str
@@ -124,6 +121,11 @@ withSnds :: ([a] -> [b]) -> [(c, a)] -> [(c, b)]
 zip :: [a] -> [b] -> [(a, b)]
 zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 elem :: a -> [a] -> Bool
+
+-- comparators
+not :: Bool -> Bool
+and :: Bool -> Bool -> Bool
+or :: Bool -> Bool -> Bool
 
 ------------- Maps
 
