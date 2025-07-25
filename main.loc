@@ -139,7 +139,8 @@ or :: Bool -> Bool -> Bool
 keys k v :: Map k v -> [k]
 vals k v :: Map k v -> [v]
 mapKey k v k' :: (k -> k') -> Map k v -> Map k' v
-mapVal k v v' :: (v -> v') -> Map v k -> Map k v'
+mapVal k v v' :: (v -> v') -> Map k v -> Map k  v'
 filterKey k v :: (k -> Bool) -> Map k v -> Map k v
 filterVal k v :: (v -> Bool) -> Map k v -> Map k v
 readMap :: Filename -> Map Str Str
+fromList k v :: [(k,v)] -> Map k v
